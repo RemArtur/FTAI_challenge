@@ -202,6 +202,15 @@
 
             const result = await response.json();
             console.log(result);
+            displayResponse(result);
+
+        }
+        function displayResponse(response) {
+            const responseContainer = document.getElementById('response');
+            responseContainer.innerHTML = `
+                <h3>Response:</h3>
+                <pre>${JSON.stringify(response, null, 2)}</pre>
+            `;
         }
     </script>
 </head>
@@ -241,5 +250,6 @@
 
         <button type="submit">Send Data</button>
     </form>
+    <div id="response" style="margin-top: 20px;"></div>
 </body>
 </html>

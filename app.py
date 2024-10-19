@@ -22,12 +22,7 @@ def handle_data():
     response = {
         "message": "Data received",
         "data": {
-            "users": users,
-            "biographies": biographies,
-            "posts": posts,
-            "friends": friends,
-            "groups": groups,
-            "photos": photos
+            "types": types
         }
     }
     return jsonify(response), 201
