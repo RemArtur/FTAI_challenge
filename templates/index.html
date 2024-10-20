@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychology Classification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #5277F3;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h3 {
+            text-align: center;
+            color: #FFFFFF;
+        }
+        form {
+            background-color: #3D38A5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        div {
+            margin-bottom: 20px;
+        }
+        input[type="number"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px 0 10px 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        button[type="submit"] {
+            background-color: #000;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        button[type="button"]:hover {
+            background-color: #dc3545;
+        }
+        #response {
+            padding: 20px;
+            background-color: #3D38A5;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px #3D38A5;
+        }
+        @media (max-width: 768px) {
+            input[type="number"], input[type="text"] {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        let postCount = 0;
+        let friendCount = 0;
+        let photoCount = 0;
+        let groupCount = 0;
+        let userCount = 0;
+        let biographyCount = 0;
+
+        function addAnimation(element) {
+            element.style.opacity = 0;
+            element.style.transform = "translateY(-20px)";
+            setTimeout(() => {
+                element.style.transition = "all 0.5s ease";
+                element.style.opacity = 1;
+                element.style.transform = "translateY(0)";
+            }, 10);
+        }
+        function loadFromLocalStorage() {
+            const data = JSON.parse(localStorage.getItem('formData') || '{}');
+            if (data.users) data.users.forEach(addUserField);
+            if (data.biographies) data.biographies.forEach(addBiographyField);
+            if (data.posts) data.posts.forEach(addPostField);
+            if (data.friends) data.friends.forEach(addFriendField);
+            if (data.groups) data.groups.forEach(addGroupField);
+            if (data.photos) data.photos.forEach(addPhotoField);
+        }
+        function addInputEventListener(field) {
+            field.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', saveToLocalStorage);
+            });
+        }
+        function saveToLocalStorage() {
+            const data = {
+                users: getUsers(),
+                biographies: getBiographies(),
+                posts: getPosts(),
+                friends: getFriends(),
+                groups: getGroups(),
+                photos: getPhotos()
+            };
+            localStorage.setItem('formData', JSON.stringify(data));
+        }
+
+        function addPostField() {
+            postCount++;
+            const postField = document.createElement('div');
+            postField.innerHTML = `
+                <input type="number" id="postId${postCount}" placeholder="Post PostId" required>
+                <input type="number" id="postUserId${postCount}" placeholder="Post UserId" required>
+                <input type="text" id="postText${postCount}" placeholder="Post Text" required>
+                <input type="number" id="postIsOwner${postCount}" placeholder="Post IsOwner" required>
+                <input type="number" id="postDate${postCount}" placeholder="Post Date" required>
+                <button type="button" onclick="removeField(this)">Убрать пост</button>
+            `;
+            document.getElementById('posts').appendChild(postField);
+            addAnimation(postField);
+        }
+
+        function addGroupField() {
+            groupCount++;
+            const groupField = document.createElement('div');
+            groupField.innerHTML = `
+                <input type="number" id="groupId${groupCount}" placeholder="Group GroupId" required>
+                <input type="number" id="groupUserId${groupCount}" placeholder="Group UserId" required>
+                <input type="text" id="groupName${groupCount}" placeholder="Group Name" required>
+                <input type="text" id="groupDescription${groupCount}" placeholder="Group Description" required>
+                <button type="button" onclick="removeField(this)">Убрать группу</button>
+            `;
+            document.getElementById('groups').appendChild(groupField);
+            addAnimation(groupField);
+        }
+
+        function addFriendField() {
+            friendCount++;
+            const friendField = document.createElement('div');
+            friendField.innerHTML = `
+                <input type="number" id="friendId${friendCount}" placeholder="Friend FriendId" required>
+                <input type="number" id="friendUserId${friendCount}" placeholder="Friend UserId" required>
+                <input type="text" id="friendFirstName${friendCount}" placeholder="Friend FirstName" required>
+                <input type="text" id="friendLastName${friendCount}" placeholder="Friend LastName" required>
+                <input type="text" id="friendCity${friendCount}" placeholder="Friend City" required>
+                <input type="text" id="friendEducation${friendCount}" placeholder="Friend Education" required>
+                <input type="text" id="friendWork${friendCount}" placeholder="Friend Work" required>
+                <button type="button" onclick="removeField(this)">Убрать друга</button>
+            `;
+            document.getElementById('friends').appendChild(friendField);
+            addAnimation(friendField);
+        }
+
+        function addPhotoField() {
+            photoCount++;
+            const photoField = document.createElement('div');
+            photoField.innerHTML = `
+                <input type="number" id="photoId${photoCount}" placeholder="Photo PhotoId" required>
+                <input type="number" id="photoUserId${photoCount}" placeholder="Photo UserId" required>
+                <input type="text" id="photoImgToTxt${photoCount}" placeholder="Photo ImgToTxt" required>
+                <input type="text" id="photoUrl${photoCount}" placeholder="Photo Url" required>
+                <input type="number" id="photoLikeCount${photoCount}" placeholder="Photo LikeCount" required>
+                <button type="button" onclick="removeField(this)">Убрать фото</button>
+            `;
+            document.getElementById('photos').appendChild(photoField);
+            addAnimation(photoField);
+        }
+
+        function addUserField() {
+            userCount++;
+            const userField = document.createElement('div');
+            userField.innerHTML = `
+                <input type="number" id="userId${userCount}" placeholder="User UserId" required>
+                <input type="number" id="userVkId${userCount}" placeholder="User VkId" required>
+                <input type="text" id="userFirstName${userCount}" placeholder="User FirstName" required>
+                <input type="text" id="userLastName${userCount}" placeholder="User LastName" required>
+                <input type="text" id="userBirthDate${userCount}" placeholder="User BirthDate" required>
+                <input type="number" id="userAge${userCount}" placeholder="User Age" required step="0.01" min="0">
+                <button type="button" onclick="removeField(this)">Убрать пользователя</button>
+            `;
+            document.getElementById('users').appendChild(userField);
+            addAnimation(userField);
+        }
+
+        function addBiographyField() {
+            biographyCount++;
+            const biographyField = document.createElement('div');
+            biographyField.innerHTML = `
+                <input type="number" id="biographyId${biographyCount}" placeholder="Biography BiographyId" required>
+                <input type="number" id="biographyUserId${biographyCount}" placeholder="Biography UserId" required>
+                <input type="text" id="biographyActivity${biographyCount}" placeholder="Biography Activity" required>
+                <input type="text" id="biographyInterests${biographyCount}" placeholder="Biography Interests" required>
+                <input type="text" id="biographyMusic${biographyCount}" placeholder="Biography Music" required>
+                <input type="text" id="biographyFilms${biographyCount}" placeholder="Biography Films" required>
+                <input type="text" id="biographyTv${biographyCount}" placeholder="Biography Tv" required>
+                <input type="text" id="biographyBooks${biographyCount}" placeholder="Biography Books" required>
+                <input type="text" id="biographyGames${biographyCount}" placeholder="Biography Games" required>
+                <input type="text" id="biographyQuotes${biographyCount}" placeholder="Biography Quotes" required>
+                <input type="text" id="biographyAbout${biographyCount}" placeholder="Biography About" required>
+                <button type="button" onclick="removeField(this)">Убрать биографию</button>
+            `;
+            document.getElementById('biographies').appendChild(biographyField);
+            addAnimation(biographyField);
+        }
+
+        function removeField(button) {
+            const field = button.parentElement;
+            field.style.transition = "all 0.3s ease";
+            field.style.opacity = 0;
+            field.style.transform = "translateY(-20px)";
+            setTimeout(() => field.remove(), 300);
+        }
+
+        async function sendData() {
+            
+            const posts = [];
+            for (let i = 1; i <= postCount; i++) {
+                const postId = document.getElementById(`postId${i}`)?.value || '';
+                const postUserId = document.getElementById(`postUserId${i}`)?.value || '';
+                const postText = document.getElementById(`postText${i}`)?.value || '';
+                const postIsOwner = document.getElementById(`postIsOwner${i}`)?.value || '';
+                const postDate = document.getElementById(`postDate${i}`)?.value || '';
+                if (postId && postUser && postText && postIsOwner && postDate) {
+                    posts.push({ id: parseInt(postId), user_id: parseInt(postUserId), text: postText, isowner: parseInt(postIsOwner), date: parseInt(postDate) });
+                }
+            }
+
+            const friends = [];
+            for (let i = 1; i <= friendCount; i++) {
+                const friendId = document.getElementById(`friendId${i}`)?.value || '';
+                const friendUserId = document.getElementById(`friendUserId${i}`)?.value || '';
+                const friendFirstName = document.getElementById(`friendFirstName${i}`)?.value || '';
+                const friendLastName = document.getElementById(`friendLastName${i}`)?.value || '';
+                const friendCity = document.getElementById(`friendCity${i}`)?.value || '';
+                const friendEducation = document.getElementById(`friendEducation${i}`)?.value || '';
+                const friendWork = document.getElementById(`friendWork${i}`)?.value || '';
+                if (friendId && friendUserId && friendFirstName && friendLastName && friendCity && friendEducation && friendWork) {
+                    friends.push({ id: parseInt(friendId), user_id: parseInt(friendUserId), first_name: friendFirstName, last_name: friendLastName, city: friendCity, education: friendEducation, work: friendWork });
+                }
+            }
+
+            const groups = [];
+            for (let i = 1; i <= groupCount; i++) {
+                const groupId = document.getElementById(`groupId${i}`)?.value || '';
+                const groupUserId = document.getElementById(`groupUserId${i}`)?.value || '';
+                const groupName = document.getElementById(`groupName${i}`)?.value || '';
+                const groupDescription = document.getElementById(`groupDescription${i}`)?.value || '';
+                if (groupId && groupUserId && groupName && groupDescription) {
+                    groups.push({ id: parseInt(groupId), user_id: parseInt(groupUserId), name: groupName, description: groupDescription });
+                }
+            }
+
+            const photos = [];
+            for (let i = 1; i <= photoCount; i++) {
+                const photoId = document.getElementById(`photoId${i}`)?.value || '';
+                const photoUserId = document.getElementById(`photoUserId${i}`)?.value || '';
+                const photoImgToTxt = document.getElementById(`photoImgToTxt${i}`)?.value || '';
+                const photoUrl = document.getElementById(`photoUrl${i}`)?.value || '';
+                const photoLikeCount = document.getElementById(`photoLikeCount${i}`)?.value || '';
+                if (photoId && photoUserId && photoImgToTxt && photoUrl && photoLikeCount) {
+                    photos.push({ id: parseInt(photoId), user_id: parseInt(photoUserId), igm2txt: photoImgToTxt, url: photoUrl, like_count: parseInt(photoLikeCount) });
+                }
+            }
+
+            const users = [];
+            for (let i = 1; i <= userCount; i++) {
+                const userId = document.getElementById(`userId${i}`)?.value || '';
+                const userVkId = document.getElementById(`userVkId${i}`)?.value || '';
+                const userFirstName = document.getElementById(`userFirstName${i}`)?.value || '';
+                const userLastName = document.getElementById(`userLastName${i}`)?.value || '';
+                const userBirthDate = document.getElementById(`userBirthDate${i}`)?.value || '';
+                const userAge = document.getElementById(`userAge${i}`)?.value || '';
+                if (userId && UserVkId && userFirstName && userLastName && userBirthDate && userAge) {
+                    users.push({ id: parseInt(userId), vk_id: parseInt(userVkId), first_name: userFirstName, last_name: userLastName, birth_date: userBirthDate, age: parseFloat(userAge) });
+                }
+            }
+
+            const biographies = [];
+            for (let i = 1; i <= biographyCount; i++) {
+                const biographyId = document.getElementById(`biographyId${i}`)?.value || '';
+                const biographyUserId = document.getElementById(`biographyUserId${i}`)?.value || '';
+                const biographyActivity = document.getElementById(`biographyActivity${i}`)?.value || '';
+                const biographyInterests = document.getElementById(`biographyInterests${i}`)?.value || '';
+                const biographyMusic = document.getElementById(`biographyMusic${i}`)?.value || '';
+                const biographyFilms = document.getElementById(`biographyFilms${i}`)?.value || '';
+                const biographyTv = document.getElementById(`biographyTv${i}`)?.value || '';
+                const biographyBooks = document.getElementById(`biographyBooks${i}`)?.value || '';
+                const biographyGames = document.getElementById(`biographyGames${i}`)?.value || '';
+                const biographyQuotes = document.getElementById(`biographyQuotes${i}`)?.value || '';
+                const biographyAbout = document.getElementById(`biographyAbout${i}`)?.value || '';
+                if (biographyId && biographyUserId && biographyActivity && biographyInterests && biographyMusic && biographyFilms && biographyTv && biographyBooks && biographyGames && biographyQuotes && biographyAbout) {
+                    biographies.push({ id: parseInt(biographyId), user_id: parseInt(biographyUserId), activity: biographyActivity, interests: biographyInterests, music: biographyMusic, films: biographyMusic, tv: biographyTv, books: biographyBooks, games: biographyGames, quotes: biographyQuotes, about: biographyAbout });
+                }
+            }
+
+            const data = { users, biographies, posts, friends, groups, photos };
+
+            const response = await fetch('/api/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            console.log(result);
+            displayResponse(result);
+        }
+
+        function displayResponse(response) {
+            const responseContainer = document.getElementById('response');
+            responseContainer.innerHTML = `
+                <h3>Response:</h3>
+                <pre>${JSON.stringify(response, null, 2)}</pre>
+            `;
+        }
+        window.onload = loadFromLocalStorage;
+    </script>
+</head>
+<body>
+    <h1>Классификация Психологии</h1>
+    <form onsubmit="event.preventDefault(); sendData(); saveToLocalStorage();">
+
+        <div id="users">
+            <h3>Пользователи</h3>
+            <button type="button" onclick="addUserField()">Добавить Пользователя</button>
+        </div>
+
+        <div id="biographies">
+            <h3>Биографии</h3>
+            <button type="button" onclick="addBiographyField()">Добавить Биографию</button>
+        </div>
+
+        <div id="posts">
+            <h3>Посты</h3>
+            <button type="button" onclick="addPostField()">Добавить Пост</button>
+        </div>
+
+        <div id="friends">
+            <h3>Друзья</h3>
+            <button type="button" onclick="addFriendField()">Добавить Друга</button>
+        </div>
+
+        <div id="groups">
+            <h3>Группы</h3>
+            <button type="button" onclick="addGroupField()">Добавить Группу</button>
+        </div>
+
+        <div id="photos">
+            <h3>Фотографии</h3>
+            <button type="button" onclick="addPhotoField()">Добавить Фотографию</button>
+        </div>
+
+        <button type="submit">Отправить Данные</button>
+    </form>
+    <div id="response" style="margin-top: 20px;"></div>
+</body>
+</html>
