@@ -10,7 +10,7 @@ https://buildin.ai/share/abe71a4f-ce23-4e2b-9ec8-c827735bf525
 ## Branch: main
 ### Файлы
 1)vk.ipynb: код дальнейшего расширения проекта при использовании API VK на больших мощностях<p></p>
-2)hack.ipynb
+2)hack.ipynb: код решения
 
 ## Branch: site
 ### Файлы
